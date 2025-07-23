@@ -9,6 +9,11 @@ import { PlusCircle } from "lucide-react"
 
 async function getUser() {
   const cookieStore = cookies()
+  const accessToken = cookieStore.get("sb-access-token")?.value
+  if (!accessToken) {
+    return null
+  }
+
   const supabaseUser = await supabase.auth.getUser()
   return supabaseUser.data.user
 }

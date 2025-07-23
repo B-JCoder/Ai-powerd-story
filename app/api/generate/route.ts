@@ -7,9 +7,10 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
 
+
 export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse<GenerateStoryResponse>>> {
   try {
-    const { userId } = auth()
+    const { userId } = await auth()
 
     if (!userId) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 })
@@ -67,7 +68,13 @@ Make sure the story is age-appropriate, engaging, teaches positive values, and h
       max_tokens: 3000,
     })
 
-    const storyContent = completion.choices[0].message.content
+   const storyContent = completion.choices?.[0]?.message?.content;
+
+if (!storyContent) {
+  throw new Error("Story content not found in OpenAI response");
+}
+
+    
 
     if (!storyContent) {
       throw new Error("No story content generated")
@@ -91,25 +98,34 @@ Make sure the story is age-appropriate, engaging, teaches positive values, and h
     }
 
     const chaptersWithImages = await Promise.all(
-      parsedStory.chapters.map(async (chapter: any) => {
-        try {
-          const imageResponse = await openai.images.generate({
-            model: "dall-e-3",
-            prompt: `Children's book illustration: ${chapter.imagePrompt}. Style: Colorful, friendly, cartoon-like, safe and welcoming atmosphere, high quality, detailed but not scary, appropriate for young readers.`,
-            size: "1024x1024",
-            quality: "standard",
-            n: 1,
-          })
+  parsedStory.chapters.map(async (chapter: any) => {
+    try {
+      const imageResponse = await openai.images.generate({
+        model: "dall-e-3",
+        prompt: `Children's book illustration: ${chapter.imagePrompt}. Style: Colorful, friendly, cartoon-like, safe and welcoming atmosphere, high quality, detailed but not scary, appropriate for young readers.`,
+        size: "1024x1024",
+        quality: "standard",
+        n: 1,
+      });
 
-          return {
-            ...chapter,
-            imageUrl: imageResponse.data[0].url,
-          }
-        } catch {
-          return chapter
-        }
-      }),
-    )
+      const imageUrl = imageResponse.data?.[0]?.url;
+
+      if (!imageUrl) {
+        throw new Error("No image URL returned from DALL-E");
+      }
+
+      return {
+        ...chapter,
+        imageUrl,
+      };
+
+    } catch (error) {
+      console.error("Image generation error:", error);
+      return chapter; // Return original chapter if error occurs
+    }
+  })
+);
+
 
     return NextResponse.json({
       success: true,

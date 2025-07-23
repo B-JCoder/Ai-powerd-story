@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { BookOpen, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
-import Image from "next/image"
 import { useParams } from "next/navigation"
 import { UserButton } from "@clerk/nextjs"
 import { toast } from "sonner"
@@ -178,41 +177,46 @@ export default function StoryPage() {
             variants={fadeInUp}
             className="flex flex-col md:flex-row gap-8 items-start mb-12"
           >
-            <div className="flex-1">
-              <Card className="bg-white/80 backdrop-blur-sm shadow-xl border-0">
-                <CardContent className="p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                    {currentChapterData.title || `Chapter ${currentChapterData.chapterNumber}`}
-                  </h2>
-                  <div className="prose prose-lg max-w-none">
-                    {currentChapterData.content.split("\n").map((paragraph, index) => (
-                      <p key={index} className="text-lg leading-relaxed text-gray-700 mb-4">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+           {currentChapterData && (
+  <div className="flex-1">
+    <Card className="bg-white/80 backdrop-blur-sm shadow-xl border-0">
+      <CardContent className="p-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          {currentChapterData.title || `Chapter ${currentChapterData.chapterNumber}`}
+        </h2>
+        <div className="prose prose-lg max-w-none">
+          {currentChapterData.content.split("\n").map((paragraph, index) => (
+            <p key={index} className="text-lg leading-relaxed text-gray-700 mb-4">
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+)}
+
 
             {/* Chapter Image */}
-            {currentChapterData.imageUrl && (
-              <div className="flex-1">
-                <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.3 }}>
-                  <Card className="bg-white/80 backdrop-blur-sm shadow-xl border-0">
-                    <CardContent className="p-4">
-                      <Image
-                        src={currentChapterData.imageUrl || "/placeholder.svg"}
-                        alt={`Chapter ${currentChapterData.chapterNumber} illustration`}
-                        width={500}
-                        height={500}
-                        className="w-full rounded-xl shadow-lg"
-                      />
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              </div>
-            )}
+           {currentChapterData && (
+  <div className="flex-1">
+    <Card className="bg-white/80 backdrop-blur-sm shadow-xl border-0">
+      <CardContent className="p-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          {currentChapterData.title || `Chapter ${currentChapterData.chapterNumber}`}
+        </h2>
+        <div className="prose prose-lg max-w-none">
+          {currentChapterData.content.split("\n").map((paragraph, index) => (
+            <p key={index} className="text-lg leading-relaxed text-gray-700 mb-4">
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+)}
+
           </motion.div>
 
           {/* Story End */}

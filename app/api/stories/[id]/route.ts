@@ -11,11 +11,11 @@ interface RouteParams {
 }
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: RouteParams,
 ): Promise<NextResponse<ApiResponse<{ story: Story }>>> {
   try {
-    const { userId } = auth()
+    const { userId } = await auth()
 
     if (!userId) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 })
@@ -38,16 +38,17 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      data: { story: { id: storyDoc.id, ...storyData } },
+      data: { story: storyData }
+
     })
   } catch (error) {
     return NextResponse.json({ success: false, error: "Failed to fetch story" }, { status: 500 })
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: RouteParams): Promise<NextResponse<ApiResponse>> {
+export async function DELETE(_request: NextRequest, { params }: RouteParams): Promise<NextResponse<ApiResponse>> {
   try {
-    const { userId } = auth()
+    const { userId } = await auth()
 
     if (!userId) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 })
@@ -77,7 +78,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams): Pro
 
 export async function PUT(request: NextRequest, { params }: RouteParams): Promise<NextResponse<ApiResponse>> {
   try {
-    const { userId } = auth()
+    const { userId } = await auth()
 
     if (!userId) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 })

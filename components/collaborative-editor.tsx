@@ -168,13 +168,21 @@ export default function CollaborativeEditor({
     return `${minutes} minutes ago`
   }
 
-  const getActiveEditorsText = () => {
-    const activeEditors = editSessions.filter((session) => session.isActive && session.userId !== user?.id)
+const getActiveEditorsText = () => {
+  if (!user) return null;
 
-    if (activeEditors.length === 0) return null
-    if (activeEditors.length === 1) return `${activeEditors[0].userName} is editing`
-    return `${activeEditors.length} people are editing`
+  const activeEditors = editSessions.filter(
+    (session) => session.isActive && session.userId !== user!.id // <-- using non-null assertion
+  );
+
+  if (activeEditors.length === 0) return null;
+
+  if (activeEditors.length === 1) {
+    return `${activeEditors[0].userName ?? 'Someone'} is editing`;
   }
+
+  return `${activeEditors.length} people are editing`;
+};
 
   return (
     <Card className="bg-white/80 backdrop-blur-sm shadow-xl border-0">

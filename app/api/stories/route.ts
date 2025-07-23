@@ -6,7 +6,7 @@ import type { ApiResponse, Story, GenerateStoryResponse } from "@/types"
 
 export async function GET(): Promise<NextResponse<ApiResponse<{ stories: Story[] }>>> {
   try {
-    const { userId } = auth()
+    const { userId } = await auth()
 
     if (!userId) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 })
@@ -35,7 +35,7 @@ export async function GET(): Promise<NextResponse<ApiResponse<{ stories: Story[]
 
 export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse<{ storyId: string }>>> {
   try {
-    const { userId } = auth()
+    const { userId } = await auth()
 
     if (!userId) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 })

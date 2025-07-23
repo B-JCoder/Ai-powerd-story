@@ -7,9 +7,10 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
 
+
 export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse<GenerateImageResponse>>> {
   try {
-    const { userId } = auth()
+    const { userId } = await auth()
 
     if (!userId) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 })
@@ -40,7 +41,17 @@ No text or words in the image
       n: 1,
     })
 
-    const imageUrl = response.data[0].url
+    const imageData = response.data?.[0];
+
+if (!imageData || !imageData.url) {
+  throw new Error("Image URL not found in the response");
+}
+
+const imageUrl = imageData.url;
+    if (!imageUrl) {
+      throw new Error("No image URL returned from DALL-E");
+    }
+    
 
     if (!imageUrl) {
       throw new Error("No image URL returned from DALL-E")
