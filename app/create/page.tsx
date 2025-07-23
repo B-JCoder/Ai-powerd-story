@@ -1,4 +1,3 @@
-"use client"
 import { Navigation } from "@/components/navigation"
 import { StoryCreationForm } from "@/components/story-creation-form"
 import { supabase } from "@/lib/supabase"
