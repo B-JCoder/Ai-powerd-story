@@ -6,6 +6,10 @@ import { redirect } from "next/navigation"
 
 async function getUser() {
   const cookieStore = cookies()
+  const token = cookieStore.get("sb-access-token")?.value
+  if (!token) {
+    return null
+  }
   const supabaseUser = await supabase.auth.getUser()
   return supabaseUser.data.user
 }
