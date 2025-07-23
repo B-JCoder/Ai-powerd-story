@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 
 // Safe wrapper for Clerk hooks that handles when Clerk is not available
 export function useSafeUser() {
-  const [user, setUser] = useState(null)
+  const [user] = useState(null)
   const [isLoaded, setIsLoaded] = useState(false)
   const [hasClerk, setHasClerk] = useState(false)
 
@@ -17,7 +17,6 @@ export function useSafeUser() {
 
         if (isValidKey) {
           // Dynamically import Clerk hooks only when available
-          const { useUser } = await import("@clerk/nextjs")
           setHasClerk(true)
         } else {
           setIsLoaded(true)

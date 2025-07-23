@@ -1,6 +1,5 @@
 export class AudioService {
   private static synthesis: SpeechSynthesis | null = null
-  private static currentUtterance: SpeechSynthesisUtterance | null = null
 
   static initialize(): void {
     if (typeof window !== "undefined") {
@@ -33,7 +32,6 @@ export class AudioService {
     utterance.pitch = 1.1
     utterance.volume = 0.8
 
-    this.currentUtterance = utterance
     this.synthesis.speak(utterance)
 
     return new Promise((resolve, reject) => {
@@ -57,7 +55,6 @@ export class AudioService {
   static stop(): void {
     if (this.synthesis) {
       this.synthesis.cancel()
-      this.currentUtterance = null
     }
   }
 

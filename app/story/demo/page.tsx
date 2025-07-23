@@ -83,21 +83,22 @@ export default function DemoStoryPage() {
   const currentChapterData = demoStory.chapters[currentChapter]
   const totalChapters = demoStory.chapters.length
 
-  const shareStory = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: title,
-          text: `Check out this demo AI-generated story: ${title}`,
-          url: window.location.href,
-        })
-      } catch (error) {
-        navigator.clipboard.writeText(window.location.href)
-      }
-    } else {
-      navigator.clipboard.writeText(window.location.href)
-    }
-  }
+  // const shareStory = async () => {
+  //   if (navigator.share) {
+  //     try {
+  //       await navigator.share({
+  //         title: title,
+  //         text: `Check out this demo AI-generated story: ${title}`,
+  //         url: window.location.href,
+  //       })
+  //     } catch (error) {
+  //       navigator.clipboard.writeText(window.location.href)
+  //     }
+  //   } else {
+  //     navigator.clipboard.writeText(window.location.href)
+  //   }
+  // }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100">
@@ -108,6 +109,7 @@ export default function DemoStoryPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
+        
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/create-story">
             <Button variant="ghost" className="flex items-center gap-2">
@@ -134,6 +136,44 @@ export default function DemoStoryPage() {
           </div>
         </div>
       </motion.div>
+
+      {/* Main Content */}
+
+      <div className="bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 min-h-screen">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-6">{title}</h1>
+          <p className="text-lg text-center text-gray-700 mb-8">
+            A personalized story featuring {demoStory.metadata.mainCharacter}
+            {demoStory.metadata.supportingCharacters.length > 0 &&
+              ` and ${demoStory.metadata.supportingCharacters.join(", ")}`}
+          </p>
+        </div>
+        </div>
+      {/* Story Content */}
+      <div className="bg-white/80 backdrop-blur-sm shadow-lg rounded-lg border mx-4 md:mx-8 lg:mx-16 xl:mx-24">
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm">
+              <Heart className="w-4 h-4 mr-2" />
+              Save
+            </Button>
+            <SocialShare
+              title={title}
+              description={`Check out this demo AI-generated story: ${title}`}
+              hashtags={["AIStorybook", "ChildrensStories"]}
+              size="sm"
+              variant="outline"
+            />
+            <Button variant="outline" size="sm">
+              <Download className="w-4 h-4 mr-2" />
+              Download
+            </Button>
+          </div>
+        </div>
+        </div>
+        </div>
 
       <div className="max-w-4xl mx-auto px-4 py-12">
         <motion.div initial="initial" animate="animate" variants={staggerContainer}>
@@ -198,37 +238,45 @@ export default function DemoStoryPage() {
           )}
 
           {/* Current Chapter */}
-          <motion.div
-            key={currentChapter}
-            variants={fadeInUp}
-            className="flex flex-col md:flex-row gap-8 items-start mb-12"
-          >
-            <div className="flex-1">
-              <Card className="bg-white/80 backdrop-blur-sm shadow-xl border-0">
-                <CardContent className="p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Chapter {currentChapterData.chapterNumber}</h2>
-                  <div className="prose prose-lg max-w-none">
-                    {currentChapterData.content.split("\n").map((paragraph, index) => (
-                      <p key={index} className="text-lg leading-relaxed text-gray-700 mb-4">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-            <div className="flex-1">
-              <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
-                <Image
-                  src={currentChapterData.imageUrl || "/placeholder.svg"}
-                  alt={`Chapter ${currentChapterData.chapterNumber} illustration`}
-                  width={500}
-                  height={400}
-                  className="w-full rounded-2xl shadow-2xl"
-                />
-              </motion.div>
-            </div>
-          </motion.div>
+         {currentChapterData && (
+  <motion.div
+    key={currentChapter}
+    variants={fadeInUp}
+    className="flex flex-col md:flex-row gap-8 items-start mb-12"
+  >
+    {/* Left: Chapter Text */}
+    <div className="flex-1">
+      <Card className="bg-white/80 backdrop-blur-sm shadow-xl border-0">
+        <CardContent className="p-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            Chapter {currentChapterData.chapterNumber}
+          </h2>
+          <div className="prose prose-lg max-w-none">
+            {currentChapterData.content.split("\n").map((paragraph, index) => (
+              <p key={index} className="text-lg leading-relaxed text-gray-700 mb-4">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+
+    {/* Right: Chapter Image */}
+    <div className="flex-1">
+      <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
+        <Image
+          src={currentChapterData.imageUrl || "/placeholder.svg"}
+          alt={`Chapter ${currentChapterData.chapterNumber} illustration`}
+          width={500}
+          height={400}
+          className="w-full rounded-2xl shadow-2xl"
+        />
+      </motion.div>
+    </div>
+  </motion.div>
+)}
+
 
           {/* Story End */}
           {currentChapter === totalChapters - 1 && (
